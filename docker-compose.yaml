@@ -9,11 +9,19 @@ services:
       - db
     volumes:
       - ./:/app
+      - ./node_modules:/app/node_modules
     env_file:
       - .env
+    networks:
+      - manages_default
   db:
     image: mongo
     ports:
       - 27017:27017
     volumes:
       - ./data:/data/db
+    networks:
+      - manages_default
+
+networks:
+  manages_default:

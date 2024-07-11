@@ -4,12 +4,13 @@ FROM node:22
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the package.json and yarn.lock files to the working directory
-COPY package.json  .
-COPY yarn.lock .
+# Copy the package.json and pnpm-lock.yaml files to the working directory
+COPY package.json .
+COPY pnpm-lock.yaml .
 
-# Install the dependencies using yarn
-RUN yarn
+# Install the dependencies using pnpm
+RUN npm install -g pnpm
+RUN pnpm install
 
 # Copy the rest of the application code to the working directory
 COPY . .
@@ -18,4 +19,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the application
-CMD ["yarn", "start:dev"]
+CMD ["pnpm", "start:dev"]
