@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/crateAccount.dto';
 
@@ -11,8 +11,8 @@ export class AccountController {
     return this.accountService.create(newAccount);
   }
 
-  @Get()
-  async findAll() {
-    return this.accountService.findAll();
+  @Get(':dni')
+  async findByDni(@Param('dni') dni: string) {
+    return this.accountService.findByDni(dni);
   }
 }

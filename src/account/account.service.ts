@@ -17,7 +17,11 @@ export class AccountService {
     return account;
   }
 
-  async findAll(): Promise<Account[]> {
-    return this.accountModel.find().exec();
+  async findByDni(dni: string): Promise<Account[]> {
+    return this.accountModel
+      .find({
+        dni: dni,
+      })
+      .exec();
   }
 }
