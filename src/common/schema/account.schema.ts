@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class Account {
   @Prop({
     required: true,
@@ -26,6 +28,7 @@ export class Account {
     type: String,
   })
   dni: string;
+
   @Prop({
     required: true,
     type: String,

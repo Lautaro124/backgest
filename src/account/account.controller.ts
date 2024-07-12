@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/crateAccount.dto';
 
@@ -14,5 +14,10 @@ export class AccountController {
   @Get(':dni')
   async findByDni(@Param('dni') dni: string) {
     return this.accountService.findByDni(dni);
+  }
+
+  @Patch('/update-balance')
+  async updateBalance(@Body() updateBalance: any) {
+    return this.accountService.updateBalance(updateBalance);
   }
 }
