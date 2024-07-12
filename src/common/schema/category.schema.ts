@@ -1,9 +1,16 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({
   timestamps: true,
 })
 export class Category {
+  @Prop({
+    required: true,
+    type: String,
+    unique: true,
+  })
+  uniqueId: string;
+
   @Prop({
     required: true,
     type: String,
@@ -16,3 +23,5 @@ export class Category {
   })
   color: string;
 }
+
+export const CategorySchema = SchemaFactory.createForClass(Category);

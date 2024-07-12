@@ -26,8 +26,9 @@ export class Account {
   @Prop({
     required: true,
     type: String,
+    unique: true,
   })
-  dni: string;
+  uniqueId: string;
 
   @Prop({
     required: true,

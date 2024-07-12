@@ -16,7 +16,7 @@ export class CreateAccountDto {
 
   @IsNotEmpty()
   @IsString()
-  dni: string;
+  uniqueId: string;
 
   @IsNotEmpty()
   @IsString()

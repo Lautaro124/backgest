@@ -28,7 +28,7 @@ export class AccountService {
 
   async updateBalance(updateBalance: UpdateBalanceDto) {
     const account = await this.accountModel.findOne({
-      dni: updateBalance.dni,
+      dni: updateBalance.uniqueId,
       name: updateBalance.name,
     });
     account.value = updateBalance.value;
