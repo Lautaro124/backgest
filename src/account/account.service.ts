@@ -31,7 +31,7 @@ export class AccountService {
       dni: updateBalance.uniqueId,
       name: updateBalance.name,
     });
-    account.value = updateBalance.value;
+    account.ammount = updateBalance.value;
     account.save();
     return account;
   }

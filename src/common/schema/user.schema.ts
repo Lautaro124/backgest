@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema({
   timestamps: true,
 })
-export class Account {
+export class User {
   @Prop({
     required: true,
     type: String,
@@ -11,17 +11,26 @@ export class Account {
   name: string;
 
   @Prop({
-    required: true,
-    default: 0,
-    type: Number,
+    required: false,
+    type: String,
+    unique: true,
   })
-  ammount: number;
+  email: string;
 
   @Prop({
     required: true,
     type: String,
   })
-  category: string;
+  password: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    unique: true,
+    minlength: 4,
+    maxlength: 4,
+  })
+  securityCode: string;
 
   @Prop({
     required: true,
@@ -32,9 +41,10 @@ export class Account {
 
   @Prop({
     required: true,
-    type: String,
+    type: Number,
+    default: 0,
   })
-  exchange: string;
+  ammount: number;
 }
 
-export const AccountSchema = SchemaFactory.createForClass(Account);
+export const UserSchema = SchemaFactory.createForClass(User);
