@@ -4,9 +4,6 @@ export class UpdateBalanceDto {
   @IsString()
   name: string;
 
-  @IsString()
-  uniqueId: string;
-
   @IsNumber()
   @Min(0)
   value: number;

@@ -12,8 +12,11 @@ export class AccountService {
     private readonly accountModel: Model<Account>,
   ) {}
 
-  async create(newAccount: CreateAccountDto) {
-    const account = new this.accountModel(newAccount);
+  async create(newAccount: CreateAccountDto, uniqueId: string) {
+    const account = new this.accountModel({
+      ...newAccount,
+      uniqueId: uniqueId,
+    });
     account.save();
     return account;
   }
@@ -26,13 +29,20 @@ export class AccountService {
       .exec();
   }
 
-  async updateBalance(updateBalance: UpdateBalanceDto) {
+  async updateBalance(updateBalance: UpdateBalanceDto, uniqueId: string) {
     const account = await this.accountModel.findOne({
-      dni: updateBalance.uniqueId,
+      uniqueId: uniqueId,
       name: updateBalance.name,
     });
     account.ammount = updateBalance.value;
     account.save();
     return account;
+  }
+
+  async updateUniuqeId(oldUniqueId: string, newUniqueId: string) {
+    return this.accountModel.updateMany(
+      { uniqueId: oldUniqueId },
+      { uniqueId: newUniqueId },
+    );
   }
 }

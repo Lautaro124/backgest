@@ -16,9 +16,5 @@ export class CreateAccountDto {
 
   @IsNotEmpty()
   @IsString()
-  uniqueId: string;
-
-  @IsNotEmpty()
-  @IsString()
   exchange: string;
 }

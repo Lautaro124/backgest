@@ -9,6 +9,7 @@ export class UserService {
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
   ) {}
+
   async findOneByEmail(email: string): Promise<User | undefined> {
     return this.userModel.findOne({ email }).exec();
   }
@@ -20,5 +21,9 @@ export class UserService {
   async createUser(user: User): Promise<User> {
     const newUser = new this.userModel(user);
     return newUser.save();
+  }
+
+  async updateUniuqeId(email: string, uniqueId: string) {
+    return this.userModel.updateOne({ email }, { uniqueId });
   }
 }

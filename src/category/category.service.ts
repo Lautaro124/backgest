@@ -12,8 +12,11 @@ export class CategoryService {
     private readonly categoryModel: Model<Category>,
   ) {}
 
-  async create(newCategory: CreateCategoryDto) {
-    const category = new this.categoryModel(newCategory);
+  async create(newCategory: CreateCategoryDto, uniqueId: string) {
+    const category = new this.categoryModel({
+      ...newCategory,
+      uniqueId: uniqueId,
+    });
     category.save();
     return category;
   }
@@ -22,9 +25,9 @@ export class CategoryService {
     return this.categoryModel.find();
   }
 
-  async updateCategory(updateCategoryDto: UpdateCategoryDto) {
+  async updateCategory(updateCategoryDto: UpdateCategoryDto, uniqueId: string) {
     const category = await this.categoryModel.findOne({
-      dni: updateCategoryDto.uniqueId,
+      dni: uniqueId,
     });
     if (!category) {
       return null;
@@ -33,5 +36,12 @@ export class CategoryService {
     category.color = updateCategoryDto.color ?? category.color;
     category.save();
     return category;
+  }
+
+  async updateUniuqeId(oldUniqueId: string, newUniqueId: string) {
+    return this.categoryModel.updateMany(
+      { uniqueId: oldUniqueId },
+      { uniqueId: newUniqueId },
+    );
   }
 }

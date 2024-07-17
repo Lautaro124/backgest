@@ -1,14 +1,27 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/crateAccount.dto';
+import { UNIQUE_ID } from 'src/common/constants/headerKey.constants';
+import { UpdateBalanceDto } from './dto/updateAccount.dto';
 
 @Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post()
-  async create(@Body() newAccount: CreateAccountDto) {
-    return this.accountService.create(newAccount);
+  async create(
+    @Body() newAccount: CreateAccountDto,
+    @Headers(UNIQUE_ID) uniqueId: string,
+  ) {
+    return this.accountService.create(newAccount, uniqueId);
   }
 
   @Get(':dni')
@@ -17,7 +30,10 @@ export class AccountController {
   }
 
   @Patch('/update-balance')
-  async updateBalance(@Body() updateBalance: any) {
-    return this.accountService.updateBalance(updateBalance);
+  async updateBalance(
+    @Body() updateBalance: UpdateBalanceDto,
+    @Headers(UNIQUE_ID) uniqueId: string,
+  ) {
+    return this.accountService.updateBalance(updateBalance, uniqueId);
   }
 }

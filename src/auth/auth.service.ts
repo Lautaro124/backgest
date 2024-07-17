@@ -3,38 +3,55 @@ import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { SingUpDto } from './dto/singUp.dto';
+import { Auth } from './interface/auth.interface';
+import { v4 as uuidv4 } from 'uuid';
+import { CategoryService } from 'src/category/category.service';
+import { AccountService } from 'src/account/account.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private jwtService: JwtService,
+    private categoryService: CategoryService,
+    private accountService: AccountService,
   ) {}
 
-  async signIn({ email, password }: LoginDto): Promise<{ token: string }> {
+  async signIn(
+    { email, password }: LoginDto,
+    uniqueId?: string,
+  ): Promise<Auth> {
     const user = await this.userService.findOneByEmail(email);
     if (!user && user.password !== password) {
       throw new UnauthorizedException();
     }
+    if (uniqueId && user.uniqueId !== uniqueId) {
+      throw new UnauthorizedException();
+    }
+    const newUniqueId = this.createNewUniqueID();
     const token = await this.jwtService.signAsync({
       email: user.email,
       securityCode: user.securityCode,
-      uniqueId: user.uniqueId,
     });
-    return { token };
+    await this.updateUserUniqueID(email, user.uniqueId, newUniqueId);
+
+    return { token, uniqueId: newUniqueId };
   }
 
-  async signUp(singUpDto: SingUpDto): Promise<{ token: string }> {
-    const userExists = await this.userService.findOneBySecurityCode(
+  async signUp(singUpDto: SingUpDto): Promise<Auth> {
+    const isUserSecurityCode = await this.userService.findOneBySecurityCode(
       singUpDto.securityCode,
     );
-    if (userExists) {
+    const isUserEmail = await this.userService.findOneByEmail(singUpDto.email);
+
+    if (isUserSecurityCode || isUserEmail) {
       throw new UnauthorizedException('User already exists');
     }
-    const uniqueId = singUpDto.securityCode + singUpDto.name;
+    const newUniqueId = this.createNewUniqueID();
+
     const newUser = await this.userService.createUser({
       ...singUpDto,
-      uniqueId,
+      uniqueId: newUniqueId,
     });
 
     const token = await this.jwtService.signAsync({
@@ -43,6 +60,17 @@ export class AuthService {
       uniqueId: newUser.uniqueId,
     });
 
-    return { token };
+    return { token, uniqueId: newUniqueId };
+  }
+
+  createNewUniqueID(): string {
+    const newUniqueId = uuidv4();
+    return newUniqueId as string;
+  }
+
+  updateUserUniqueID(email: string, oldUniqueID: string, uniqueId: string) {
+    this.userService.updateUniuqeId(email, uniqueId);
+    this.categoryService.updateUniuqeId(oldUniqueID, uniqueId);
+    this.accountService.updateUniuqeId(oldUniqueID, uniqueId);
   }
 }
